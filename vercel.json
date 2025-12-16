@@ -1,10 +1,7 @@
 {
   "functions": {
-    "app/api/analyze/route.ts": {
-      "maxDuration": 60
-    },
-    "app/api/scrape/route.ts": {
-      "maxDuration": 30
+    "app/api/**/*.ts": {
+      "maxDuration": 300
     }
   }
 }

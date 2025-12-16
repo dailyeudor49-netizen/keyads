@@ -15,7 +15,8 @@ import {
 import { scoreKeywords, generateSummary } from '@/lib/scoring';
 import { CampaignConfig, ScrapedPage, KeywordData } from '@/lib/types';
 
-export const maxDuration = 60;
+// Vercel Pro: max 300s
+export const maxDuration = 300;
 
 export async function POST(request: NextRequest) {
   try {
