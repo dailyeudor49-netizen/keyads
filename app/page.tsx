@@ -194,7 +194,15 @@ export default function Home() {
       });
 
       clearInterval(messageInterval);
-      const scrapeData = await scrapeResponse.json();
+
+      // Gestisci risposte non-JSON (es. errori Vercel)
+      const scrapeText = await scrapeResponse.text();
+      let scrapeData;
+      try {
+        scrapeData = JSON.parse(scrapeText);
+      } catch {
+        throw new Error(`Errore server: ${scrapeText.slice(0, 100)}`);
+      }
 
       if (!scrapeResponse.ok) {
         throw new Error(scrapeData.error || 'Errore nello scraping');
@@ -254,7 +262,15 @@ export default function Home() {
       });
 
       clearInterval(messageInterval);
-      const analyzeData = await analyzeResponse.json();
+
+      // Gestisci risposte non-JSON (es. timeout Vercel)
+      const analyzeText = await analyzeResponse.text();
+      let analyzeData;
+      try {
+        analyzeData = JSON.parse(analyzeText);
+      } catch {
+        throw new Error(`Errore server: ${analyzeText.slice(0, 100)}`);
+      }
 
       if (!analyzeResponse.ok) {
         throw new Error(analyzeData.error || 'Errore nell\'analisi');
@@ -362,7 +378,15 @@ export default function Home() {
       });
 
       clearInterval(messageInterval);
-      const analyzeData = await analyzeResponse.json();
+
+      // Gestisci risposte non-JSON (es. timeout Vercel)
+      const analyzeText = await analyzeResponse.text();
+      let analyzeData;
+      try {
+        analyzeData = JSON.parse(analyzeText);
+      } catch {
+        throw new Error(`Errore server: ${analyzeText.slice(0, 100)}`);
+      }
 
       if (!analyzeResponse.ok) {
         throw new Error(analyzeData.error || 'Errore nell\'analisi');

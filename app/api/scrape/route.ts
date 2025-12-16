@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import * as cheerio from 'cheerio';
 import { ScrapedPage } from '@/lib/types';
 
+export const maxDuration = 30;
+
 export async function POST(request: NextRequest) {
   try {
     const { urls } = await request.json();
