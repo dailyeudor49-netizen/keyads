@@ -38,6 +38,17 @@ export async function POST(request: NextRequest) {
     const useGoogleAds = isGoogleAdsConfigured();
     const googleAdsConfig = getGoogleAdsConfig();
 
+    console.log('=== DEBUG ===');
+    console.log('Google Ads configurato:', useGoogleAds);
+    console.log('ENV vars presenti:', {
+      GOOGLE_ADS_DEVELOPER_TOKEN: !!process.env.GOOGLE_ADS_DEVELOPER_TOKEN,
+      GOOGLE_CLIENT_ID: !!process.env.GOOGLE_CLIENT_ID,
+      GOOGLE_CLIENT_SECRET: !!process.env.GOOGLE_CLIENT_SECRET,
+      GOOGLE_REFRESH_TOKEN: !!process.env.GOOGLE_REFRESH_TOKEN,
+      GOOGLE_ADS_CUSTOMER_ID: !!process.env.GOOGLE_ADS_CUSTOMER_ID,
+      GEMINI_API_KEY: !!process.env.GEMINI_API_KEY
+    });
+
     let allKeywordsWithMetrics: KeywordData[] = [];
     let seedKeywords: string[] = [];
 
