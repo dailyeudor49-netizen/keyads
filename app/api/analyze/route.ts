@@ -35,8 +35,9 @@ export async function POST(request: NextRequest) {
     // Reset token counter per questa analisi
     resetTokenUsage();
 
-    const useGoogleAds = isGoogleAdsConfigured();
-    const googleAdsConfig = getGoogleAdsConfig();
+    // Temporaneamente disabilitato Google Ads per debug
+    const useGoogleAds = false; // isGoogleAdsConfigured();
+    const googleAdsConfig = null; // getGoogleAdsConfig();
 
     let allKeywordsWithMetrics: KeywordData[] = [];
     let seedKeywords: string[] = [];
