@@ -80,27 +80,27 @@ Rispondi SOLO con il nuovo primary text, nient'altro.`;
         title: {
           name: 'titolo breve Google Ads',
           maxChars: limit || 40,
-          instruction: 'Scrivi un titolo breve e accattivante che descriva il PRODOTTO o un suo beneficio'
+          instruction: 'Scrivi un titolo breve sul PRODOTTO FISICO venduto'
         },
         description: {
           name: 'descrizione Google Ads',
           maxChars: limit || 90,
-          instruction: 'Scrivi una descrizione che evidenzi i benefici concreti del PRODOTTO'
+          instruction: 'Scrivi una descrizione dei benefici del PRODOTTO FISICO venduto'
         },
         longTitle: {
           name: 'titolo lungo per video',
           maxChars: limit || 90,
-          instruction: 'Scrivi un titolo lungo e persuasivo per video che catturi l\'attenzione sul PRODOTTO'
+          instruction: 'Scrivi un titolo lungo per video sul PRODOTTO FISICO venduto'
         },
         headline: {
           name: 'headline Meta Ads',
           maxChars: limit || 40,
-          instruction: 'Scrivi un headline breve e accattivante per Facebook/Instagram Ads sul PRODOTTO'
+          instruction: 'Scrivi un headline sul PRODOTTO FISICO venduto'
         },
         metaDescription: {
           name: 'descrizione Meta Ads',
           maxChars: limit || 90,
-          instruction: 'Scrivi una descrizione persuasiva per Facebook/Instagram Ads sui benefici del PRODOTTO'
+          instruction: 'Scrivi una descrizione dei benefici del PRODOTTO FISICO venduto'
         }
       };
 
@@ -112,9 +112,30 @@ Rispondi SOLO con il nuovo primary text, nient'altro.`;
         );
       }
 
-      prompt = `${config.instruction}.
+      prompt = `🚨 ATTENZIONE: Devi scrivere SOLO sul PRODOTTO SPECIFICO, NON sul sito web! 🚨
+
+${config.instruction}.
 
 ${productContext}
+
+⚠️ IDENTIFICA IL PRODOTTO:
+Dalla landing page sopra, identifica il PRODOTTO FISICO in vendita (es: un gadget, un elettrodomestico, un accessorio, ecc).
+Il tuo testo deve parlare di QUEL prodotto specifico: cosa fa, a cosa serve, quali benefici dà.
+
+🚫 NON SCRIVERE MAI su:
+- Il sito web o la piattaforma
+- L'azienda o il brand
+- Servizi generici
+- "Scopri il nostro sito"
+- "Visita il negozio"
+- Spedizione, garanzia, installazione
+
+✅ SCRIVI INVECE su:
+- Il nome del prodotto
+- Cosa FA fisicamente il prodotto
+- Quale problema RISOLVE
+- Benefici concreti per l'utente
+- Caratteristiche tecniche del prodotto
 
 LINGUA: ${language.toUpperCase()} (grammatica perfetta!)
 MAX CARATTERI: ${config.maxChars} (TASSATIVO!)
@@ -122,14 +143,7 @@ MAX CARATTERI: ${config.maxChars} (TASSATIVO!)
 TESTO ATTUALE: "${currentText}"
 ${avoidTexts}
 
-REGOLE:
-- Scrivi qualcosa di COMPLETAMENTE DIVERSO dal testo attuale
-- Focus SOLO sul PRODOTTO (cosa fa, benefici, risultati)
-- MAI parlare di: brand, sito, azienda, spedizione, garanzia
-- Grammatica ${language.toUpperCase()} perfetta
-- Max ${config.maxChars} caratteri!
-
-Rispondi SOLO con il nuovo testo, senza virgolette.`;
+Rispondi SOLO con il nuovo testo (max ${config.maxChars} char), senza virgolette.`;
     }
 
     console.log(`Rigenerando ${type} (${previousTexts?.length || 0} testi precedenti da evitare)...`);
