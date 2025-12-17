@@ -135,27 +135,34 @@ export async function generateAdCopyForCountry(
   // Estrai info prodotto dal contenuto landing (NON dal title che è spesso il nome del sito!)
   const productInfo = landingContent.slice(0, 1500);
 
-  const prompt = `⚠️⚠️⚠️ LINGUA OBBLIGATORIA: ${languageName.toUpperCase()} ⚠️⚠️⚠️
-TUTTO IL COPY DEVE ESSERE SCRITTO IN ${languageName.toUpperCase()}!
-NON scrivere in italiano! La lingua è ${languageName.toUpperCase()}!
+  const prompt = `🚨🚨🚨 REGOLA #1: SCRIVI SOLO SUL PRODOTTO FISICO! 🚨🚨🚨
+
+⚠️ PRIMA DI TUTTO: Identifica il PRODOTTO FISICO venduto sulla landing page.
+NON è il sito web. NON è l'azienda. È L'OGGETTO FISICO che il cliente riceve a casa.
+
+Esempio: Se la landing vende un "Massaggiatore cervicale", scrivi sul massaggiatore.
+NON scrivere: "Scopri il nostro sito", "Benvenuto su [brand]", "I nostri servizi"
+SCRIVI: "Massaggiatore cervicale che elimina il dolore", "Rilassa i muscoli in 10 minuti"
+
+🚫 VIETATO ASSOLUTO (per TUTTE le lingue, incluso italiano):
+- Parlare del sito web
+- Parlare dell'azienda/brand
+- Scrivere "scopri", "visita", "benvenuto"
+- Frasi generiche che non nominano il prodotto
+- Qualsiasi cosa che non riguardi l'OGGETTO FISICO venduto
+
+✅ OBBLIGATORIO (per TUTTE le lingue):
+- Nominare il PRODOTTO specifico
+- Descrivere cosa FA il prodotto
+- Descrivere i BENEFICI del prodotto
+- Descrivere quale PROBLEMA risolve
+
+LINGUA: ${languageName.toUpperCase()}
+MERCATO: ${countryPricing.countryCode} - ${countryName}
+PREZZO: ${countryPricing.finalPrice} ${countryPricing.currency}${countryPricing.originalPrice ? ` (era ${countryPricing.originalPrice} ${countryPricing.currency})` : ''}
 
 RUOLO: Copywriter affiliate marketing COD. Copy aggressivi, linguaggio SEMPLICE e diretto.
-
-📝 GRAMMATICA: Scrivi INTERAMENTE in ${languageName.toUpperCase()} CORRETTO, senza errori grammaticali!
-
-🎯 FOCUS ASSOLUTO SUL PRODOTTO:
-Devi scrivere copy per IL PRODOTTO SPECIFICO venduto sulla landing page.
-NON parlare MAI di: azienda, brand, sito web, chi siamo, altri prodotti.
-
-Identifica dalla landing:
-- Nome ESATTO del PRODOTTO
-- Cosa FA concretamente il prodotto
-- Quale PROBLEMA risolve
-- Benefici SPECIFICI per l'utente
-
-MERCATO: ${countryPricing.countryCode} - ${countryName}
-LINGUA OUTPUT: ${languageName.toUpperCase()} (TUTTO il testo generato, nessuna eccezione!)
-PREZZO: ${countryPricing.finalPrice} ${countryPricing.currency}${countryPricing.originalPrice ? ` (era ${countryPricing.originalPrice} ${countryPricing.currency})` : ''}
+📝 GRAMMATICA: Scrivi in ${languageName.toUpperCase()} CORRETTO!
 
 === LANDING PAGE DEL PRODOTTO ===
 ${landingTitle}
@@ -187,24 +194,25 @@ Struttura OBBLIGATORIA (usa \\n per andare a capo):
 - Cambia SOLO le parole/frasi, non la struttura
 - TUTTO IN ${languageName.toUpperCase()}!
 
-⛔ VIETATO: timer, countdown, "scade tra X ore", errori grammaticali, testo in italiano
-✅ OK: urgenza generica tipo "scorte limitate" (TRADOTTO in ${languageName.toUpperCase()})
+⛔ VIETATO: timer, countdown, "scade tra X ore", errori grammaticali
+✅ OK: urgenza generica tipo "scorte limitate"
 
-=== GOOGLE DEMAND GEN (SCRIVI IN ${languageName.toUpperCase()}!) ===
+=== GOOGLE DEMAND GEN (LINGUA: ${languageName.toUpperCase()}) ===
 
-🚨 TUTTO IN ${languageName.toUpperCase()}! TUTTO SUL PRODOTTO, NON IL SITO/BRAND! 🚨
+🚨 OGNI TITOLO/DESCRIZIONE DEVE PARLARE DEL PRODOTTO FISICO! 🚨
 
 Scrivi titoli e descrizioni SUL PRODOTTO in ${languageName.toUpperCase()}:
-- Cosa fa il prodotto
-- Benefici del prodotto
-- Risultati che ottieni col prodotto
+- Nome del prodotto + beneficio
+- Cosa FA fisicamente il prodotto
+- Quale problema RISOLVE
+- Risultati concreti
 
 LIMITI CARATTERI OBBLIGATORI:
-- titles: 5 titoli in ${languageName.toUpperCase()}, MAX 40 caratteri ognuno
-- descriptions: 5 descrizioni in ${languageName.toUpperCase()}, MAX 90 caratteri ognuno
-- longTitles: 5 titoli video in ${languageName.toUpperCase()}, MAX 90 caratteri ognuno
+- titles: 5 titoli, MAX 40 caratteri ognuno
+- descriptions: 5 descrizioni, MAX 90 caratteri ognuno
+- longTitles: 5 titoli video, MAX 90 caratteri ognuno
 
-VIETATO nei titoli: spedizione, garanzia, installazione, brand, nome sito, TESTO IN ITALIANO
+🚫 VIETATO: nome sito, brand, "scopri", "visita", spedizione, garanzia
 
 === OUTPUT JSON ===
 
@@ -234,11 +242,17 @@ VIETATO nei titoli: spedizione, garanzia, installazione, brand, nome sito, TESTO
 3. Problema che PRODOTTO risolve
 4. Facilità uso PRODOTTO
 
-⚠️ OGNI SINGOLO COPY DEVE PARLARE DEL PRODOTTO. MAI del brand/sito/azienda!
-📝 CONTROLLA LA GRAMMATICA ${languageName.toUpperCase()} prima di rispondere!
+🚨🚨🚨 REMINDER FINALE 🚨🚨🚨
+1. LINGUA: Scrivi TUTTO in ${languageName.toUpperCase()}
+2. PRODOTTO: Ogni singolo copy deve parlare del PRODOTTO FISICO venduto
+3. VIETATO: brand, sito, azienda, "scopri", "visita", "benvenuto"
+4. Il copy deve far capire COSA È il prodotto e COSA FA
 
-🚨🚨🚨 REMINDER FINALE: SCRIVI TUTTO IN ${languageName.toUpperCase()}! 🚨🚨🚨
-Se la lingua è tedesco, scrivi in tedesco. Se è francese, scrivi in francese. MAI in italiano (a meno che il paese non sia Italia)!
+Se non riesci a identificare un prodotto fisico specifico dalla landing, cerca:
+- Immagini di prodotti
+- Prezzi
+- Caratteristiche tecniche
+- Benefici descritti
 
 JSON valido.`;
 
