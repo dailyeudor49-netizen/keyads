@@ -135,126 +135,115 @@ export async function generateAdCopyForCountry(
   // Estrai info prodotto dal contenuto landing (NON dal title che è spesso il nome del sito!)
   const productInfo = landingContent.slice(0, 1500);
 
-  const prompt = `🚨🚨🚨 REGOLA #1: SCRIVI SOLO SUL PRODOTTO FISICO! 🚨🚨🚨
+  const prompt = `🌍🌍🌍 OUTPUT LANGUAGE: ${languageName.toUpperCase()} 🌍🌍🌍
+ALL generated text MUST be in ${languageName.toUpperCase()}!
+${languageName !== 'italiano' ? `DO NOT write in Italian! Write in ${languageName.toUpperCase()} only!` : ''}
 
-⚠️ PRIMA DI TUTTO: Identifica il PRODOTTO FISICO venduto sulla landing page.
-NON è il sito web. NON è l'azienda. È L'OGGETTO FISICO che il cliente riceve a casa.
+MARKET: ${countryPricing.countryCode} - ${countryName}
+PRICE: ${countryPricing.finalPrice} ${countryPricing.currency}${countryPricing.originalPrice ? ` (was ${countryPricing.originalPrice} ${countryPricing.currency})` : ''}
 
-Esempio: Se la landing vende un "Massaggiatore cervicale", scrivi sul massaggiatore.
-NON scrivere: "Scopri il nostro sito", "Benvenuto su [brand]", "I nostri servizi"
-SCRIVI: "Massaggiatore cervicale che elimina il dolore", "Rilassa i muscoli in 10 minuti"
+🚨 RULE #1: Write ONLY about the PHYSICAL PRODUCT! 🚨
 
-🚫 VIETATO ASSOLUTO (per TUTTE le lingue, incluso italiano):
-- Parlare del sito web
-- Parlare dell'azienda/brand
-- Scrivere "scopri", "visita", "benvenuto"
-- Frasi generiche che non nominano il prodotto
-- Qualsiasi cosa che non riguardi l'OGGETTO FISICO venduto
+Identify the PHYSICAL PRODUCT sold on the landing page.
+NOT the website. NOT the company. The PHYSICAL OBJECT the customer receives.
 
-✅ OBBLIGATORIO (per TUTTE le lingue):
-- Nominare il PRODOTTO specifico
-- Descrivere cosa FA il prodotto
-- Descrivere i BENEFICI del prodotto
-- Descrivere quale PROBLEMA risolve
+🚫 FORBIDDEN:
+- Website/brand/company mentions
+- Generic phrases not about the product
 
-LINGUA: ${languageName.toUpperCase()}
-MERCATO: ${countryPricing.countryCode} - ${countryName}
-PREZZO: ${countryPricing.finalPrice} ${countryPricing.currency}${countryPricing.originalPrice ? ` (era ${countryPricing.originalPrice} ${countryPricing.currency})` : ''}
+✅ REQUIRED:
+- Name the specific PRODUCT
+- Describe what the product DOES
+- Describe BENEFITS
+- Describe what PROBLEM it solves
 
-RUOLO: Copywriter affiliate marketing COD. Copy aggressivi, linguaggio SEMPLICE e diretto.
-📝 GRAMMATICA: Scrivi in ${languageName.toUpperCase()} CORRETTO!
+ROLE: Affiliate marketing copywriter. Aggressive copy, SIMPLE language.
+📝 Write in ${languageName.toUpperCase()} with correct grammar!
 
-=== CONTENUTO LANDING PAGE ===
-⚠️ IGNORA il nome del sito/brand. Cerca il PRODOTTO FISICO in vendita!
+=== LANDING PAGE CONTENT ===
 ${landingContent.slice(0, 4500)}
-=== FINE CONTENUTO ===
+=== END CONTENT ===
 
 ${competitorContent ? `COMPETITOR:\n${competitorContent.slice(0, 1500)}` : ''}
 
-=== META ADS PRIMARY TEXT (SCRIVI IN ${languageName.toUpperCase()}!) ===
+=== META ADS PRIMARY TEXT (WRITE IN ${languageName.toUpperCase()}!) ===
 
-Struttura OBBLIGATORIA (usa \\n per andare a capo):
+REQUIRED STRUCTURE (use \\n for line breaks):
 
-1. HOOK forte con emoji (in ${languageName.toUpperCase()}!)
-2. Seconda frase (A CAPO dopo l'hook)
-3. Riga vuota
-4. 4-5 BULLET sul PRODOTTO in COLONNA (uno per riga, ogni bullet inizia con ✅)
-5. Riga vuota
-6. PREZZO: ❌ ${countryPricing.originalPrice || '99'} ${countryPricing.currency} → ✅ ${countryPricing.finalPrice} ${countryPricing.currency}
-7. Riga vuota
-8. LOGISTICA su 3 righe separate (TRADUCI in ${languageName.toUpperCase()}!):
-   📦 [pagamento alla consegna - TRADOTTO]
-   🚚 [spedizione veloce - TRADOTTO]
-   ⚡ [scorte limitate - TRADOTTO]
-9. Riga vuota
-10. CTA finale con 👉 (in ${languageName.toUpperCase()}!)
+1. Strong HOOK with emoji
+2. Support sentence (NEW LINE after hook)
+3. Empty line
+4. 4-5 BULLETS about PRODUCT in COLUMN (one per line, each starts with ✅)
+5. Empty line
+6. PRICE: ❌ ${countryPricing.originalPrice || '99'} ${countryPricing.currency} → ✅ ${countryPricing.finalPrice} ${countryPricing.currency}
+7. Empty line
+8. LOGISTICS on 3 separate lines (TRANSLATE to ${languageName.toUpperCase()}!):
+   📦 [cash on delivery]
+   🚚 [fast shipping]
+   ⚡ [limited stock]
+9. Empty line
+10. Final CTA with 👉
 
-⚠️ IMPORTANTE: primaryText1 e primaryText2 devono avere STRUTTURA IDENTICA!
-- Stessi a capo, stesse sezioni, bullet in COLONNA
-- Cambia SOLO le parole/frasi, non la struttura
-- TUTTO IN ${languageName.toUpperCase()}!
+⚠️ IMPORTANT: primaryText1 and primaryText2 must have IDENTICAL STRUCTURE!
+- Same line breaks, same sections, bullets in COLUMN
+- Change ONLY the words/phrases, not the structure
+- ALL IN ${languageName.toUpperCase()}!
 
-⛔ VIETATO: timer, countdown, "scade tra X ore", errori grammaticali
-✅ OK: urgenza generica tipo "scorte limitate"
+⛔ FORBIDDEN: timer, countdown, "expires in X hours"
+✅ OK: generic urgency like "limited stock"
 
-=== GOOGLE DEMAND GEN (LINGUA: ${languageName.toUpperCase()}) ===
+=== GOOGLE DEMAND GEN (LANGUAGE: ${languageName.toUpperCase()}) ===
 
-🚨 OGNI TITOLO/DESCRIZIONE DEVE PARLARE DEL PRODOTTO FISICO! 🚨
+🚨 EVERY TITLE/DESCRIPTION MUST BE ABOUT THE PHYSICAL PRODUCT! 🚨
 
-Scrivi titoli e descrizioni SUL PRODOTTO in ${languageName.toUpperCase()}:
-- Nome del prodotto + beneficio
-- Cosa FA fisicamente il prodotto
-- Quale problema RISOLVE
-- Risultati concreti
+Write titles and descriptions ABOUT THE PRODUCT in ${languageName.toUpperCase()}:
+- Product name + benefit
+- What the product DOES physically
+- What problem it SOLVES
+- Concrete results
 
-LIMITI CARATTERI OBBLIGATORI:
-- titles: 5 titoli, MAX 40 caratteri ognuno
-- descriptions: 5 descrizioni, MAX 90 caratteri ognuno
-- longTitles: 5 titoli video, MAX 90 caratteri ognuno
+CHARACTER LIMITS (MANDATORY):
+- titles: 5 titles, MAX 40 characters each
+- descriptions: 5 descriptions, MAX 90 characters each
+- longTitles: 5 video titles, MAX 90 characters each
 
-🚫 VIETATO: nome sito, brand, "scopri", "visita", spedizione, garanzia
+🚫 FORBIDDEN: site name, brand, shipping, warranty
 
 === OUTPUT JSON ===
 
 {
-  "landingTakeaways": "Riassunto prodotto in ${languageName}",
-  "competitorSnapshot": "Analisi competitor o null",
+  "landingTakeaways": "[Product summary in ${languageName.toUpperCase()}]",
+  "competitorSnapshot": "[Competitor analysis or null]",
   "facebookAngles": [
     {
-      "angleName": "Nome angle",
-      "angleDescription": "Descrizione angle",
-      "primaryText1": "🔥 Hook variante A\\nFrase supporto A\\n\\n✅ Bullet 1\\n✅ Bullet 2\\n✅ Bullet 3\\n✅ Bullet 4\\n\\n❌ 99€ → ✅ 49€\\n\\n📦 Pagamento alla consegna\\n🚚 Spedizione 3-5 giorni\\n⚡ Ultimi pezzi\\n\\n👉 Ordina ora",
-      "primaryText2": "🔥 Hook variante B\\nFrase supporto B\\n\\n✅ Bullet 1 diverso\\n✅ Bullet 2 diverso\\n✅ Bullet 3 diverso\\n✅ Bullet 4 diverso\\n\\n❌ 99€ → ✅ 49€\\n\\n📦 Pagamento alla consegna\\n🚚 Spedizione 3-5 giorni\\n⚡ Ultimi pezzi\\n\\n👉 Scopri di più",
-      "headline": "Headline prodotto",
-      "description": "Descrizione beneficio prodotto"
+      "angleName": "[Angle name in ${languageName.toUpperCase()}]",
+      "angleDescription": "[Angle description in ${languageName.toUpperCase()}]",
+      "primaryText1": "🔥 [Hook A in ${languageName.toUpperCase()}]\\n[Support A]\\n\\n✅ [Bullet 1]\\n✅ [Bullet 2]\\n✅ [Bullet 3]\\n✅ [Bullet 4]\\n\\n❌ 99€ → ✅ 49€\\n\\n📦 [COD in ${languageName.toUpperCase()}]\\n🚚 [Shipping in ${languageName.toUpperCase()}]\\n⚡ [Urgency in ${languageName.toUpperCase()}]\\n\\n👉 [CTA in ${languageName.toUpperCase()}]",
+      "primaryText2": "🔥 [Hook B in ${languageName.toUpperCase()}]\\n[Support B]\\n\\n✅ [Different bullet 1]\\n✅ [Different bullet 2]\\n✅ [Different bullet 3]\\n✅ [Different bullet 4]\\n\\n❌ 99€ → ✅ 49€\\n\\n📦 [COD]\\n🚚 [Shipping]\\n⚡ [Urgency]\\n\\n👉 [Different CTA]",
+      "headline": "[Product headline in ${languageName.toUpperCase()}]",
+      "description": "[Product benefit in ${languageName.toUpperCase()}]"
     }
   ],
   "googleDemandGen": {
-    "titles": ["Titolo prodotto 1", "Titolo prodotto 2", "Titolo prodotto 3", "Titolo prodotto 4", "Titolo prodotto 5"],
-    "descriptions": ["Descrizione prodotto 1", "Descrizione prodotto 2", "Descrizione prodotto 3", "Descrizione prodotto 4", "Descrizione prodotto 5"],
-    "longTitles": ["Titolo lungo prodotto 1", "Titolo lungo prodotto 2", "Titolo lungo prodotto 3", "Titolo lungo prodotto 4", "Titolo lungo prodotto 5"]
+    "titles": ["[Title 1 in ${languageName.toUpperCase()}]", "[Title 2]", "[Title 3]", "[Title 4]", "[Title 5]"],
+    "descriptions": ["[Desc 1 in ${languageName.toUpperCase()}]", "[Desc 2]", "[Desc 3]", "[Desc 4]", "[Desc 5]"],
+    "longTitles": ["[Long title 1 in ${languageName.toUpperCase()}]", "[Long 2]", "[Long 3]", "[Long 4]", "[Long 5]"]
   }
 }
 
-4 ANGLE (tutti sul PRODOTTO):
-1. Versatilità PRODOTTO
-2. Risparmio con PRODOTTO
-3. Problema che PRODOTTO risolve
-4. Facilità uso PRODOTTO
+4 ANGLES (all about PRODUCT):
+1. Product VERSATILITY
+2. SAVINGS with product
+3. PROBLEM the product solves
+4. EASE OF USE
 
-🚨🚨🚨 REMINDER FINALE 🚨🚨🚨
-1. LINGUA: Scrivi TUTTO in ${languageName.toUpperCase()}
-2. PRODOTTO: Ogni singolo copy deve parlare del PRODOTTO FISICO venduto
-3. VIETATO: brand, sito, azienda, "scopri", "visita", "benvenuto"
-4. Il copy deve far capire COSA È il prodotto e COSA FA
+🚨🚨🚨 FINAL REMINDER 🚨🚨🚨
+1. LANGUAGE: Write EVERYTHING in ${languageName.toUpperCase()}
+2. PRODUCT: Every single copy must be about the PHYSICAL PRODUCT sold
+3. FORBIDDEN: brand, site, company
+4. Copy must explain WHAT the product IS and what it DOES
 
-Se non riesci a identificare un prodotto fisico specifico dalla landing, cerca:
-- Immagini di prodotti
-- Prezzi
-- Caratteristiche tecniche
-- Benefici descritti
-
-JSON valido.`;
+Valid JSON only.`;
 
   try {
     console.log('=== PROMPT DEBUG ===');
