@@ -174,3 +174,62 @@ export const CAMPAIGN_TYPES = [
   { id: 'performance_max' as const, name: 'Performance Max', description: 'Campagna automatizzata multi-canale' },
   { id: 'demand_gen' as const, name: 'Demand Gen', description: 'Discovery, YouTube e Gmail Ads' },
 ] as const;
+
+// ============================================
+// TIPI PER COPY GENERATION (Meta + Google Ads)
+// ============================================
+
+export interface CountryPricing {
+  countryCode: string;
+  currency: string;
+  finalPrice: number;
+  originalPrice?: number; // Prezzo scontato (opzionale)
+}
+
+export interface CopyGenerationRequest {
+  landingUrl: string;
+  competitorUrls?: string[];
+  countries: CountryPricing[];
+}
+
+// Struttura per un singolo angle Facebook
+export interface FacebookAngle {
+  angleName: string;
+  angleDescription: string;
+  primaryText1: string;
+  primaryText2: string; // Variante A/B
+  headline: string;
+  description: string;
+}
+
+// Struttura per Google Demand Gen
+export interface GoogleDemandGen {
+  titles: string[];        // 5 titoli (≤40 caratteri)
+  descriptions: string[];  // 5 descrizioni (≤90 caratteri)
+  longTitles: string[];    // 5 titoli lunghi video (≤90 caratteri)
+}
+
+// Risultati per singola nazione
+export interface CountryCopyResult {
+  countryCode: string;
+  countryName: string;
+  language: string;
+  currency: string;
+  finalPrice: number;
+  originalPrice?: number;
+  landingTakeaways: string;
+  competitorSnapshot?: string;
+  facebookAngles: FacebookAngle[];
+  googleDemandGen: GoogleDemandGen;
+}
+
+// Risposta completa della generazione copy
+export interface CopyGenerationResponse {
+  results: CountryCopyResult[];
+  tokenUsage: {
+    input: number;
+    output: number;
+    total: number;
+  };
+  landingContent?: string; // Contenuto landing per rigenerazioni future
+}
