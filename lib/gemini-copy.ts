@@ -164,10 +164,10 @@ PREZZO: ${countryPricing.finalPrice} ${countryPricing.currency}${countryPricing.
 RUOLO: Copywriter affiliate marketing COD. Copy aggressivi, linguaggio SEMPLICE e diretto.
 📝 GRAMMATICA: Scrivi in ${languageName.toUpperCase()} CORRETTO!
 
-=== LANDING PAGE DEL PRODOTTO ===
-${landingTitle}
+=== CONTENUTO LANDING PAGE ===
+⚠️ IGNORA il nome del sito/brand. Cerca il PRODOTTO FISICO in vendita!
 ${landingContent.slice(0, 4500)}
-=== FINE ===
+=== FINE CONTENUTO ===
 
 ${competitorContent ? `COMPETITOR:\n${competitorContent.slice(0, 1500)}` : ''}
 
@@ -257,6 +257,11 @@ Se non riesci a identificare un prodotto fisico specifico dalla landing, cerca:
 JSON valido.`;
 
   try {
+    console.log('=== PROMPT DEBUG ===');
+    console.log('Paese:', countryPricing.countryCode);
+    console.log('Lingua:', languageName);
+    console.log('Prompt (primi 500 char):', prompt.slice(0, 500));
+    console.log('=== FINE DEBUG ===');
     console.log('Chiamando Gemini API per copy...');
     const result = await retryWithBackoff(() => model.generateContent(prompt));
     trackCopyTokens(result);
