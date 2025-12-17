@@ -135,9 +135,13 @@ export async function generateAdCopyForCountry(
   // Estrai info prodotto dal contenuto landing (NON dal title che è spesso il nome del sito!)
   const productInfo = landingContent.slice(0, 1500);
 
-  const prompt = `RUOLO: Copywriter affiliate marketing COD. Copy aggressivi, linguaggio SEMPLICE e diretto.
+  const prompt = `⚠️⚠️⚠️ LINGUA OBBLIGATORIA: ${languageName.toUpperCase()} ⚠️⚠️⚠️
+TUTTO IL COPY DEVE ESSERE SCRITTO IN ${languageName.toUpperCase()}!
+NON scrivere in italiano! La lingua è ${languageName.toUpperCase()}!
 
-📝 GRAMMATICA: Scrivi in ${languageName.toUpperCase()} CORRETTO, senza errori grammaticali. Rileggi ogni frase!
+RUOLO: Copywriter affiliate marketing COD. Copy aggressivi, linguaggio SEMPLICE e diretto.
+
+📝 GRAMMATICA: Scrivi INTERAMENTE in ${languageName.toUpperCase()} CORRETTO, senza errori grammaticali!
 
 🎯 FOCUS ASSOLUTO SUL PRODOTTO:
 Devi scrivere copy per IL PRODOTTO SPECIFICO venduto sulla landing page.
@@ -150,7 +154,7 @@ Identifica dalla landing:
 - Benefici SPECIFICI per l'utente
 
 MERCATO: ${countryPricing.countryCode} - ${countryName}
-LINGUA: ${languageName.toUpperCase()} (tutto, incluso landingTakeaways)
+LINGUA OUTPUT: ${languageName.toUpperCase()} (TUTTO il testo generato, nessuna eccezione!)
 PREZZO: ${countryPricing.finalPrice} ${countryPricing.currency}${countryPricing.originalPrice ? ` (era ${countryPricing.originalPrice} ${countryPricing.currency})` : ''}
 
 === LANDING PAGE DEL PRODOTTO ===
@@ -160,46 +164,47 @@ ${landingContent.slice(0, 4500)}
 
 ${competitorContent ? `COMPETITOR:\n${competitorContent.slice(0, 1500)}` : ''}
 
-=== META ADS PRIMARY TEXT ===
+=== META ADS PRIMARY TEXT (SCRIVI IN ${languageName.toUpperCase()}!) ===
 
 Struttura OBBLIGATORIA (usa \\n per andare a capo):
 
-1. HOOK forte con emoji
+1. HOOK forte con emoji (in ${languageName.toUpperCase()}!)
 2. Seconda frase (A CAPO dopo l'hook)
 3. Riga vuota
 4. 4-5 BULLET sul PRODOTTO in COLONNA (uno per riga, ogni bullet inizia con ✅)
 5. Riga vuota
 6. PREZZO: ❌ ${countryPricing.originalPrice || '99'} ${countryPricing.currency} → ✅ ${countryPricing.finalPrice} ${countryPricing.currency}
 7. Riga vuota
-8. LOGISTICA su 3 righe separate:
-   📦 Pagamento alla consegna
-   🚚 Spedizione 3-5 giorni
-   ⚡ Ultimi pezzi disponibili
+8. LOGISTICA su 3 righe separate (TRADUCI in ${languageName.toUpperCase()}!):
+   📦 [pagamento alla consegna - TRADOTTO]
+   🚚 [spedizione veloce - TRADOTTO]
+   ⚡ [scorte limitate - TRADOTTO]
 9. Riga vuota
-10. CTA finale con 👉
+10. CTA finale con 👉 (in ${languageName.toUpperCase()}!)
 
 ⚠️ IMPORTANTE: primaryText1 e primaryText2 devono avere STRUTTURA IDENTICA!
 - Stessi a capo, stesse sezioni, bullet in COLONNA
 - Cambia SOLO le parole/frasi, non la struttura
+- TUTTO IN ${languageName.toUpperCase()}!
 
-⛔ VIETATO: timer, countdown, "scade tra X ore", errori grammaticali
-✅ OK: "Ultimi pezzi", "Scorte limitate"
+⛔ VIETATO: timer, countdown, "scade tra X ore", errori grammaticali, testo in italiano
+✅ OK: urgenza generica tipo "scorte limitate" (TRADOTTO in ${languageName.toUpperCase()})
 
-=== GOOGLE DEMAND GEN ===
+=== GOOGLE DEMAND GEN (SCRIVI IN ${languageName.toUpperCase()}!) ===
 
-🚨 TUTTO DEVE RIGUARDARE IL PRODOTTO, NON IL SITO/BRAND! 🚨
+🚨 TUTTO IN ${languageName.toUpperCase()}! TUTTO SUL PRODOTTO, NON IL SITO/BRAND! 🚨
 
-Scrivi titoli e descrizioni SUL PRODOTTO:
+Scrivi titoli e descrizioni SUL PRODOTTO in ${languageName.toUpperCase()}:
 - Cosa fa il prodotto
 - Benefici del prodotto
 - Risultati che ottieni col prodotto
 
 LIMITI CARATTERI OBBLIGATORI:
-- titles: 5 titoli, MAX 40 caratteri ognuno
-- descriptions: 5 descrizioni, MAX 90 caratteri ognuno
-- longTitles: 5 titoli video, MAX 90 caratteri ognuno
+- titles: 5 titoli in ${languageName.toUpperCase()}, MAX 40 caratteri ognuno
+- descriptions: 5 descrizioni in ${languageName.toUpperCase()}, MAX 90 caratteri ognuno
+- longTitles: 5 titoli video in ${languageName.toUpperCase()}, MAX 90 caratteri ognuno
 
-VIETATO nei titoli: spedizione, garanzia, installazione, brand, nome sito
+VIETATO nei titoli: spedizione, garanzia, installazione, brand, nome sito, TESTO IN ITALIANO
 
 === OUTPUT JSON ===
 
@@ -231,6 +236,9 @@ VIETATO nei titoli: spedizione, garanzia, installazione, brand, nome sito
 
 ⚠️ OGNI SINGOLO COPY DEVE PARLARE DEL PRODOTTO. MAI del brand/sito/azienda!
 📝 CONTROLLA LA GRAMMATICA ${languageName.toUpperCase()} prima di rispondere!
+
+🚨🚨🚨 REMINDER FINALE: SCRIVI TUTTO IN ${languageName.toUpperCase()}! 🚨🚨🚨
+Se la lingua è tedesco, scrivi in tedesco. Se è francese, scrivi in francese. MAI in italiano (a meno che il paese non sia Italia)!
 
 JSON valido.`;
 
