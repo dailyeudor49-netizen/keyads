@@ -159,11 +159,13 @@ export async function POST(request: NextRequest) {
     }
 
     // Step 3: Combina il contenuto della landing
+    // NON includere title e description perché spesso sono del SITO, non del prodotto!
+    // Es: "Purchstar | Wholesale Tech" invece di "Energy Saver Pro"
     const landingContent = `
-TITOLO: ${landingPage.title}
-DESCRIZIONE: ${landingPage.description}
-HEADINGS: ${landingPage.headings.join(' | ')}
-CONTENUTO: ${landingPage.content}
+HEADINGS DALLA PAGINA: ${landingPage.headings.join(' | ')}
+
+CONTENUTO PAGINA:
+${landingPage.content}
     `.trim();
 
     // Step 4: Genera copy per tutti i paesi
