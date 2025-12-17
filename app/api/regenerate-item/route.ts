@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const model = genAI.getGenerativeModel({ model: 'gemma-3-4b-it' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 
     // Usa landingContent se disponibile, altrimenti fallback su productName
     const productContext = landingContent
@@ -80,27 +80,45 @@ Rispondi SOLO con il nuovo primary text, nient'altro.`;
         title: {
           name: 'titolo breve Google Ads',
           maxChars: limit || 40,
-          instruction: 'Scrivi un titolo breve sul PRODOTTO FISICO venduto'
+          instruction: `Scrivi un titolo AGGRESSIVO e URGENTE per Google Ads!
+⚡ DEVE essere: emotivo, urgente, con un verbo d'azione
+⚡ DEVE spiegare una FUNZIONE o BENEFICIO chiave del prodotto
+⚡ Crea URGENZA: "Ultima chance", "Offerta limitata", "Solo oggi"
+⚡ Parole d'AZIONE: "Scopri", "Risparmia", "Trasforma", "Ottieni"
+❌ MAI solo il nome del prodotto!
+✅ ES: "Taglia la Bolletta 50% - Ora!" invece di "Energy Saver Pro"`
         },
         description: {
           name: 'descrizione Google Ads',
           maxChars: limit || 90,
-          instruction: 'Scrivi una descrizione dei benefici del PRODOTTO FISICO venduto'
+          instruction: `Scrivi una descrizione EMOTIVA e PERSUASIVA!
+⚡ Espandi i benefici con linguaggio emotivo
+⚡ Includi risultati specifici/numeri se possibile
+⚡ Crea desiderio e urgenza
+⚡ Focus sul problema che RISOLVE`
         },
         longTitle: {
           name: 'titolo lungo per video',
           maxChars: limit || 90,
-          instruction: 'Scrivi un titolo lungo per video sul PRODOTTO FISICO venduto'
+          instruction: `Scrivi un titolo video ACCATTIVANTE!
+⚡ Hook iniziale + funzione prodotto + beneficio + urgenza
+⚡ Deve far venire voglia di guardare il video
+⚡ Linguaggio emotivo e persuasivo`
         },
         headline: {
           name: 'headline Meta Ads',
           maxChars: limit || 40,
-          instruction: 'Scrivi un headline sul PRODOTTO FISICO venduto'
+          instruction: `Scrivi una headline CALL-TO-ACTION!
+⚡ La headline appare ACCANTO AL PULSANTE - deve spingere al CLICK!
+⚡ Stile CTA: verbo imperativo + azione
+⚡ Esempi: "Ordinalo Ora!", "Scopri il Segreto!", "Provalo Gratis!"
+❌ MAI passivo come "Prodotto di qualità"
+✅ SEMPRE orientato all'azione`
         },
         metaDescription: {
           name: 'descrizione Meta Ads',
           maxChars: limit || 90,
-          instruction: 'Scrivi una descrizione dei benefici del PRODOTTO FISICO venduto'
+          instruction: 'Scrivi una descrizione emotiva dei benefici del PRODOTTO FISICO venduto'
         }
       };
 

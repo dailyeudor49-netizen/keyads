@@ -130,14 +130,36 @@ export async function generateAdCopyForCountry(
     ? `${countryPricing.originalPrice} ${countryPricing.currency} -> ${countryPricing.finalPrice} ${countryPricing.currency}`
     : `${countryPricing.finalPrice} ${countryPricing.currency}`;
 
-  const model = genAI.getGenerativeModel({ model: 'gemma-3-4b-it' });
+  const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 
   // Estrai info prodotto dal contenuto landing (NON dal title che è spesso il nome del sito!)
   const productInfo = landingContent.slice(0, 1500);
 
-  const prompt = `🌍🌍🌍 OUTPUT LANGUAGE: ${languageName.toUpperCase()} 🌍🌍🌍
-ALL generated text MUST be in ${languageName.toUpperCase()}!
-${languageName !== 'italiano' ? `DO NOT write in Italian! Write in ${languageName.toUpperCase()} only!` : ''}
+  // Esempi di frasi nella lingua target per guidare il modello
+  const languageExamples: Record<string, string> = {
+    'italiano': 'Risparmia Ora! Ordina Subito! Scopri di Più! Proteggi i tuoi elettrodomestici! Bollette ridotte!',
+    'tedesco': 'Jetzt Sparen! Jetzt Bestellen! Mehr Erfahren! Schütze Deine Geräte! Stromrechnung senken!',
+    'francese': 'Économisez Maintenant! Commandez! Découvrez! Protégez Vos Appareils! Factures réduites!',
+    'spagnolo': '¡Ahorra Ahora! ¡Ordena Ya! ¡Descubre Más! ¡Protege Tus Electrodomésticos! ¡Facturas reducidas!',
+    'inglese': 'Save Now! Order Today! Learn More! Protect Your Appliances! Lower Bills!',
+    'portoghese': 'Poupe Agora! Encomende Já! Saiba Mais! Proteja Seus Eletrodomésticos! Contas reduzidas!',
+    'olandese': 'Bespaar Nu! Bestel Nu! Ontdek Meer! Bescherm Uw Apparaten! Lagere rekeningen!',
+    'polacco': 'Oszczędzaj Teraz! Zamów Teraz! Chroń Swoje Urządzenia! Niższe Rachunki! Stabilizuje Napięcie!',
+    'rumeno': 'Economisește Acum! Comandă Acum! Protejează Aparatele! Facturi Reduse!',
+    'greco': 'Εξοικονομήστε Τώρα! Παραγγείλετε Τώρα! Προστατέψτε τις Συσκευές!',
+    'ceco': 'Ušetřete Nyní! Objednejte Nyní! Chraňte Spotřebiče! Nižší Účty!',
+    'ungherese': 'Spórolj Most! Rendelj Most! Védd a Készülékeidet! Alacsonyabb Számlák!',
+  };
+
+  const examplesForLanguage = languageExamples[languageName] || languageExamples['inglese'];
+
+  const prompt = `🚨🚨🚨 CRITICAL: ALL OUTPUT MUST BE IN ${languageName.toUpperCase()}! 🚨🚨🚨
+
+LANGUAGE REQUIREMENT (MANDATORY):
+- Write EVERYTHING in ${languageName.toUpperCase()}
+- Examples of correct ${languageName.toUpperCase()} phrases: "${examplesForLanguage}"
+${languageName !== 'italiano' ? `- DO NOT write in Italian! NO Italian words allowed!
+- If you write in Italian, the output is INVALID and will be rejected!` : ''}
 
 MARKET: ${countryPricing.countryCode} - ${countryName}
 PRICE: ${countryPricing.finalPrice} ${countryPricing.currency}${countryPricing.originalPrice ? ` (was ${countryPricing.originalPrice} ${countryPricing.currency})` : ''}
@@ -192,22 +214,40 @@ REQUIRED STRUCTURE (use \\n for line breaks):
 ⛔ FORBIDDEN: timer, countdown, "expires in X hours"
 ✅ OK: generic urgency like "limited stock"
 
-=== GOOGLE DEMAND GEN (LANGUAGE: ${languageName.toUpperCase()}) ===
+=== GOOGLE DEMAND GEN ===
+⚠️⚠️⚠️ WRITE ALL TITLES AND DESCRIPTIONS IN ${languageName.toUpperCase()}! ⚠️⚠️⚠️
+${languageName !== 'italiano' ? `🚫 DO NOT USE ITALIAN WORDS! Every single word must be in ${languageName.toUpperCase()}!` : ''}
 
-🚨 EVERY TITLE/DESCRIPTION MUST BE ABOUT THE PHYSICAL PRODUCT! 🚨
+🚨 AGGRESSIVE MARKETING COPY! MAKE PEOPLE CLICK! 🚨
 
-Write titles and descriptions ABOUT THE PRODUCT in ${languageName.toUpperCase()}:
-- Product name + benefit
-- What the product DOES physically
-- What problem it SOLVES
-- Concrete results
+TITLES (5 titles, MAX 40 chars each) - IN ${languageName.toUpperCase()}:
+⚡ AGGRESSIVE, EMOTIONAL, URGENT marketing!
+- Each title must explain a KEY FUNCTION or BENEFIT of the product
+- Create URGENCY: "Last chance", "Limited", "Don't miss", "Now or never"
+- EMOTIONAL hooks: curiosity, fear of missing out, desire
+- ACTION words: "Discover", "Get", "Transform", "Save", "Stop"
+- NEVER just the product name! Always function + benefit + urgency
+- ALL 5 TITLES MUST BE COMPLETELY DIFFERENT FROM EACH OTHER!
+- ⚠️ LANGUAGE: ${languageName.toUpperCase()} ONLY!
 
-CHARACTER LIMITS (MANDATORY):
-- titles: 5 titles, MAX 40 characters each
-- descriptions: 5 descriptions, MAX 90 characters each
-- longTitles: 5 video titles, MAX 90 characters each
+Example bad: "Energy Saver Pro" ❌
+Example good: "Cut Your Bills 50% - Limited Offer!" ✅
+Example good: "Stop Wasting Energy - Act Now!" ✅
 
-🚫 FORBIDDEN: site name, brand, shipping, warranty
+DESCRIPTIONS (5 descriptions, MAX 90 chars each) - IN ${languageName.toUpperCase()}:
+- Expand on product benefits with emotional language
+- Include specific results/numbers when possible
+- Create desire and urgency
+- ALL 5 MUST BE DIFFERENT!
+- ⚠️ LANGUAGE: ${languageName.toUpperCase()} ONLY! NO ITALIAN WORDS!
+
+LONG TITLES (5 video titles, MAX 90 chars each) - IN ${languageName.toUpperCase()}:
+- Hook + product function + benefit + urgency
+- Make viewers want to watch
+- ALL 5 MUST BE DIFFERENT!
+- ⚠️ LANGUAGE: ${languageName.toUpperCase()} ONLY!
+
+🚫 FORBIDDEN: site name, brand, shipping, warranty, generic phrases, ITALIAN WORDS (if not Italian market)
 
 === OUTPUT JSON ===
 
@@ -220,7 +260,7 @@ CHARACTER LIMITS (MANDATORY):
       "angleDescription": "[Angle description in ${languageName.toUpperCase()}]",
       "primaryText1": "🔥 [Hook A in ${languageName.toUpperCase()}]\\n[Support A]\\n\\n✅ [Bullet 1]\\n✅ [Bullet 2]\\n✅ [Bullet 3]\\n✅ [Bullet 4]\\n\\n❌ 99€ → ✅ 49€\\n\\n📦 [COD in ${languageName.toUpperCase()}]\\n🚚 [Shipping in ${languageName.toUpperCase()}]\\n⚡ [Urgency in ${languageName.toUpperCase()}]\\n\\n👉 [CTA in ${languageName.toUpperCase()}]",
       "primaryText2": "🔥 [Hook B in ${languageName.toUpperCase()}]\\n[Support B]\\n\\n✅ [Different bullet 1]\\n✅ [Different bullet 2]\\n✅ [Different bullet 3]\\n✅ [Different bullet 4]\\n\\n❌ 99€ → ✅ 49€\\n\\n📦 [COD]\\n🚚 [Shipping]\\n⚡ [Urgency]\\n\\n👉 [Different CTA]",
-      "headline": "[Product headline in ${languageName.toUpperCase()}]",
+      "headline": "[CTA headline - action verb - push to click! in ${languageName.toUpperCase()}]",
       "description": "[Product benefit in ${languageName.toUpperCase()}]"
     }
   ],
@@ -236,6 +276,32 @@ CHARACTER LIMITS (MANDATORY):
 2. SAVINGS with product
 3. PROBLEM the product solves
 4. EASE OF USE
+
+=== FACEBOOK HEADLINES (CRITICAL!) ===
+Headlines appear NEXT TO THE BUTTON in ads!
+They MUST be CTA-style - push users to CLICK!
+
+✅ GOOD headlines (action-oriented):
+- "Get Yours Now!"
+- "Order Today!"
+- "Discover the Secret!"
+- "Try It Risk-Free!"
+- "Grab This Deal!"
+- "Start Saving Now!"
+
+❌ BAD headlines (passive):
+- "Energy Saver Pro"
+- "Best Product 2024"
+- "High Quality"
+
+Each angle's headline must be DIFFERENT and ACTION-ORIENTED!
+
+=== COMPETITOR SNAPSHOT (MANDATORY if competitor provided!) ===
+${competitorContent ? `You MUST provide a competitorSnapshot analyzing the competitor content!
+Write 2-3 sentences in ${languageName.toUpperCase()} about:
+- What competitors are doing
+- Their pricing/positioning
+- How our product compares` : 'No competitor content provided - set competitorSnapshot to null'}
 
 🚨🚨🚨 FINAL REMINDER 🚨🚨🚨
 1. LANGUAGE: Write EVERYTHING in ${languageName.toUpperCase()}
@@ -263,6 +329,25 @@ Valid JSON only.`;
       const parsed = JSON.parse(jsonMatch[0]);
       const googleDemandGen = parsed.googleDemandGen || { titles: [], descriptions: [], longTitles: [] };
 
+      // Parole italiane comuni per rilevare output sbagliato (definito prima per uso in regenerate)
+      const italianWords = [
+        'bollette', 'bolletta', 'elettrodomestici', 'elettrodomestico',
+        'risparmia', 'risparmi', 'risparmio', 'proteggi', 'protezione', 'protegge',
+        'stabilizza', 'stabilizzatore', 'stabilizzatori', 'prolunga', 'ridotte', 'ridurre', 'riduci',
+        'subito', 'scopri', 'ordina', 'acquista', 'offerta', 'casa', 'energia',
+        'durata', 'inserisci', 'inseriscilo', 'installa', 'soldi', 'salva',
+        'corrente', 'tensione', 'durano', 'metà', 'sicuro', 'sicura',
+        'tuoi', 'tuo', 'tua', 'tue', 'della', 'delle', 'degli', 'dello',
+        'sulla', 'sulle', 'negli', 'nelle', 'nel', 'nella'
+      ];
+
+      // Funzione per verificare se il testo contiene italiano
+      const textContainsItalian = (text: string): boolean => {
+        if (languageName === 'italiano') return false;
+        const lowerText = text.toLowerCase();
+        return italianWords.some(word => lowerText.includes(word));
+      };
+
       // Funzione per rigenerare UN SINGOLO elemento che supera il limite
       const regenerateSingleItem = async (
         type: 'title' | 'description' | 'longTitle',
@@ -270,27 +355,30 @@ Valid JSON only.`;
         limit: number
       ): Promise<string> => {
         const typeNames = {
-          title: 'titolo breve',
-          description: 'descrizione',
-          longTitle: 'titolo lungo video'
+          title: 'short title',
+          description: 'description',
+          longTitle: 'long video title'
         };
 
         for (let attempt = 1; attempt <= 3; attempt++) {
-          console.log(`Rigenerazione ${typeNames[type]} (tentativo ${attempt}/3): "${currentText.slice(0, 30)}..." (${currentText.length} char, max ${limit})`);
+          console.log(`Regenerating ${typeNames[type]} (attempt ${attempt}/3): "${currentText.slice(0, 30)}..." (${currentText.length} char, max ${limit})`);
 
-          const regenPrompt = `Riscrivi questo ${typeNames[type]} in ${languageName.toUpperCase()}.
+          const regenPrompt = `🚨 LANGUAGE: ${languageName.toUpperCase()} ONLY! 🚨
+${languageName !== 'italiano' ? '⛔ DO NOT write in Italian! Write in ' + languageName.toUpperCase() + '!' : ''}
 
-INFO PRODOTTO (dalla landing page):
+Rewrite this ${typeNames[type]} in ${languageName.toUpperCase()}.
+
+PRODUCT INFO:
 ${productInfo.slice(0, 800)}
 
-TESTO ATTUALE (${currentText.length} caratteri - TROPPO LUNGO):
+CURRENT TEXT (${currentText.length} chars - TOO LONG):
 "${currentText}"
 
-DEVE essere MASSIMO ${limit} caratteri (spazi inclusi).
-Mantieni il focus sul PRODOTTO, accorcia il testo.
-⚠️ NON parlare del sito/brand, SOLO del prodotto!
+MUST be MAX ${limit} characters (including spaces).
+Keep focus on the PRODUCT, shorten the text.
+⚠️ Do NOT mention website/brand, ONLY the product!
 
-Rispondi SOLO con il nuovo testo, nient'altro.`;
+Reply ONLY with the new text, nothing else.`;
 
           try {
             const result = await model.generateContent(regenPrompt);
@@ -300,11 +388,17 @@ Rispondi SOLO con il nuovo testo, nient'altro.`;
             // Rimuovi eventuali virgolette
             newText = newText.replace(/^["']|["']$/g, '').trim();
 
-            if (newText && newText.length <= limit) {
+            // Verifica lunghezza E lingua
+            if (newText && newText.length <= limit && !textContainsItalian(newText)) {
               console.log(`✅ Rigenerato: "${newText}" (${newText.length} char)`);
               return newText;
             }
-            console.log(`❌ Ancora troppo lungo: ${newText.length} char`);
+            if (newText.length > limit) {
+              console.log(`❌ Ancora troppo lungo: ${newText.length} char`);
+            }
+            if (textContainsItalian(newText)) {
+              console.log(`❌ Contiene italiano! Rigenerando...`);
+            }
           } catch (e) {
             console.error('Errore rigenerazione singola:', e);
           }
@@ -326,8 +420,10 @@ Rispondi SOLO con il nuovo testo, nient'altro.`;
           const text = item.trim();
           if (!text) continue;
 
-          if (text.length > limit) {
-            // Rigenera questo singolo elemento
+          // Rigenera se troppo lungo O se contiene italiano (quando non dovrebbe)
+          if (text.length > limit || textContainsItalian(text)) {
+            const reason = text.length > limit ? 'too long' : 'contains Italian';
+            console.log(`⚠️ Regenerating ${type}: ${reason} - "${text.slice(0, 30)}..."`);
             const fixed = await regenerateSingleItem(type, text, limit);
             result.push(fixed);
           } else {
@@ -357,21 +453,26 @@ Rispondi SOLO con il nuovo testo, nient'altro.`;
         console.log(`Generando ${missing} ${type} mancanti...`);
 
         const typePrompts = {
-          title: `${missing} titoli brevi (max 40 char) sul PRODOTTO venduto`,
-          description: `${missing} descrizioni (max 90 char) sui BENEFICI del prodotto`,
-          longTitle: `${missing} titoli lunghi per video (max 90 char) sul PRODOTTO`
+          title: `${missing} short aggressive titles (max 40 chars) about the PRODUCT`,
+          description: `${missing} emotional descriptions (max 90 chars) about PRODUCT BENEFITS`,
+          longTitle: `${missing} long video titles (max 90 chars) about the PRODUCT`
         };
 
-        const prompt = `Genera ${typePrompts[type]}.
+        const prompt = `🚨 LANGUAGE: ${languageName.toUpperCase()} ONLY! 🚨
+${languageName !== 'italiano' ? '⛔ DO NOT write in Italian! Every word must be in ' + languageName.toUpperCase() + '!' : ''}
 
-INFO PRODOTTO (dalla landing page):
+Generate ${typePrompts[type]}.
+
+PRODUCT INFO:
 ${productInfo.slice(0, 800)}
 
-LINGUA: ${languageName.toUpperCase()}
-⚠️ FOCUS SUL PRODOTTO, non sul sito/brand!
-Scrivi cosa FA il prodotto, i benefici, i risultati.
+REQUIREMENTS:
+- Write in ${languageName.toUpperCase()} language!
+- Focus on the PHYSICAL PRODUCT, not website/brand
+- Describe what the product DOES, its benefits
+- Be AGGRESSIVE and create URGENCY
 
-Rispondi SOLO con un array JSON: ["elemento1", "elemento2", ...]`;
+Reply ONLY with a JSON array: ["item1", "item2", ...]`;
 
         try {
           const result = await model.generateContent(prompt);
