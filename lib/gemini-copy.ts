@@ -130,7 +130,7 @@ export async function generateAdCopyForCountry(
     ? `${countryPricing.originalPrice} ${countryPricing.currency} -> ${countryPricing.finalPrice} ${countryPricing.currency}`
     : `${countryPricing.finalPrice} ${countryPricing.currency}`;
 
-  const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+  const model = genAI.getGenerativeModel({ model: 'gemma-3-27b-it' });
 
   // Estrai info prodotto dal contenuto landing (NON dal title che è spesso il nome del sito!)
   const productInfo = landingContent.slice(0, 1500);
@@ -183,56 +183,80 @@ ROLE: Affiliate marketing copywriter. Aggressive copy, SIMPLE language.
 📝 Write in ${languageName.toUpperCase()} with correct grammar!
 
 === LANDING PAGE CONTENT ===
-${landingContent.slice(0, 4500)}
+${landingContent.slice(0, 2000)}
 === END CONTENT ===
 
-${competitorContent ? `COMPETITOR:\n${competitorContent.slice(0, 1500)}` : ''}
+${competitorContent ? `COMPETITOR:\n${competitorContent.slice(0, 500)}` : ''}
 
 === META ADS PRIMARY TEXT (WRITE IN ${languageName.toUpperCase()}!) ===
 
-REQUIRED STRUCTURE (use \\n for line breaks):
+STRUCTURE (use \\n for line breaks):
+1. HOOK with emoji + support sentence
+2. 3-4 BULLETS (✅ each)
+3. PRICE: ❌ ${countryPricing.originalPrice || '99'} ${countryPricing.currency} → ✅ ${countryPricing.finalPrice} ${countryPricing.currency}
+4. CTA with 👉
 
-1. Strong HOOK with emoji
-2. Support sentence (NEW LINE after hook)
-3. Empty line
-4. 4-5 BULLETS about PRODUCT in COLUMN (one per line, each starts with ✅)
-5. Empty line
-6. PRICE: ❌ ${countryPricing.originalPrice || '99'} ${countryPricing.currency} → ✅ ${countryPricing.finalPrice} ${countryPricing.currency}
-7. Empty line
-8. LOGISTICS on 3 separate lines (TRANSLATE to ${languageName.toUpperCase()}!):
-   📦 [cash on delivery]
-   🚚 [fast shipping]
-   ⚡ [limited stock]
-9. Empty line
-10. Final CTA with 👉
-
-⚠️ IMPORTANT: primaryText1 and primaryText2 must have IDENTICAL STRUCTURE!
-- Same line breaks, same sections, bullets in COLUMN
-- Change ONLY the words/phrases, not the structure
-- ALL IN ${languageName.toUpperCase()}!
-
-⛔ FORBIDDEN: timer, countdown, "expires in X hours"
-✅ OK: generic urgency like "limited stock"
+⛔ FORBIDDEN: timer, countdown
+✅ OK: generic urgency
 
 === GOOGLE DEMAND GEN ===
-⚠️⚠️⚠️ WRITE ALL TITLES AND DESCRIPTIONS IN ${languageName.toUpperCase()}! ⚠️⚠️⚠️
-${languageName !== 'italiano' ? `🚫 DO NOT USE ITALIAN WORDS! Every single word must be in ${languageName.toUpperCase()}!` : ''}
+⚠️⚠️⚠️ SCRIVI TUTTO IN ${languageName.toUpperCase()}! ⚠️⚠️⚠️
 
-🚨 AGGRESSIVE MARKETING COPY! MAKE PEOPLE CLICK! 🚨
+🎯 TITLES (5 titoli, MAX 40 caratteri) - SPECIFICI SUL PRODOTTO!
 
-TITLES (5 titles, MAX 40 chars each) - IN ${languageName.toUpperCase()}:
-⚡ AGGRESSIVE, EMOTIONAL, URGENT marketing!
-- Each title must explain a KEY FUNCTION or BENEFIT of the product
-- Create URGENCY: "Last chance", "Limited", "Don't miss", "Now or never"
-- EMOTIONAL hooks: curiosity, fear of missing out, desire
-- ACTION words: "Discover", "Get", "Transform", "Save", "Stop"
-- NEVER just the product name! Always function + benefit + urgency
-- ALL 5 TITLES MUST BE COMPLETELY DIFFERENT FROM EACH OTHER!
-- ⚠️ LANGUAGE: ${languageName.toUpperCase()} ONLY!
+=== REGOLA D'ORO ===
+OGNI TITOLO DEVE DESCRIVERE COSA FA IL PRODOTTO!
+NON usare parole generiche che valgono per qualsiasi prodotto!
 
-Example bad: "Energy Saver Pro" ❌
-Example good: "Cut Your Bills 50% - Limited Offer!" ✅
-Example good: "Stop Wasting Energy - Act Now!" ✅
+✅ TITOLI CORRETTI (descrivono il prodotto):
+Per una GRIGLIA RADIATORE MOTO:
+• "ADDIO sassi nel radiatore!"
+• "MAI PIÙ radiatore danneggiato"
+• "Proteggi il motore dai detriti"
+• "Griglia che salva il radiatore"
+• "-50% protezione radiatore moto"
+
+Per un CUSCINO CERVICALE:
+• "ADDIO dolore al collo!"
+• "MAI PIÙ torcicollo al mattino"
+• "Dormi senza mal di testa"
+• "Cuscino che allinea la cervicale"
+• "Svegliati senza dolore - 39€"
+
+Per un TV BOX:
+• "ADDIO TV lenta e vecchia!"
+• "MAI PIÙ buffering sullo schermo"
+• "Trasforma la TV in Smart TV"
+• "Netflix, sport, giochi: tutto in uno"
+• "-50% cinema a casa tua"
+
+❌ TITOLI VIETATI (etichette generiche):
+• "Radiator Guard" ← ETICHETTA, non dice cosa fa
+• "Engine Shield" ← ETICHETTA
+• "Protection" ← GENERICO
+• "Save Money" ← GENERICO, non collegato al prodotto
+• "Best Quality" ← GENERICO
+• "WOW!" "INCREDIBILE!" ← VUOTI, non dicono nulla
+
+❌ MAI SCRIVERE:
+• Solo il nome del prodotto
+• Solo il prezzo
+• Parole singole come "Protezione" "Qualità" "Offerta"
+• Frasi che valgono per QUALSIASI prodotto
+
+✅ OGNI TITOLO DEVE:
+1. Menzionare un BENEFICIO SPECIFICO del prodotto
+2. Far capire COSA FA il prodotto
+3. Rispondere a: "Perché dovrei comprare QUESTO prodotto?"
+
+5 ANGLE OBBLIGATORI:
+1. PROBLEMA → SOLUZIONE: "ADDIO [problema specifico]!"
+2. FASTIDIO ELIMINATO: "MAI PIÙ [problema specifico]"
+3. TRASFORMAZIONE: "[Prima] → [Dopo] con questo prodotto"
+4. FUNZIONE: "[Cosa fa] + [risultato concreto]"
+5. URGENZA + MOTIVO: "[Sconto] + [beneficio chiave]"
+
+⚠️ SCRIVI TUTTO IN ${languageName.toUpperCase()}! MAX 40 CARATTERI!
 
 DESCRIPTIONS (5 descriptions, MAX 90 chars each) - IN ${languageName.toUpperCase()}:
 - Expand on product benefits with emotional language
@@ -247,35 +271,95 @@ LONG TITLES (5 video titles, MAX 90 chars each) - IN ${languageName.toUpperCase(
 - ALL 5 MUST BE DIFFERENT!
 - ⚠️ LANGUAGE: ${languageName.toUpperCase()} ONLY!
 
+=== PERFORMANCE MAX ===
+
+🎯 SHORT TITLES (15 titoli, MAX 30 CARATTERI)
+
+Copia lo STESSO STILE dei titoli Demand Gen, accorciandoli a 30 char.
+OGNI titolo deve essere una FRASE COMPLETA che si capisce da sola!
+
+⚠️ MASSIMO 30 CARATTERI - CONTA PRIMA DI SCRIVERE!
+
+✅ FRASI COMPLETE (si capisce tutto):
+• "ADDIO freddo in casa!" ← Capisco: niente più freddo in casa
+• "MAI PIÙ bollette salate!" ← Capisco: risparmio in bolletta
+• "ADDIO sassi nel motore!" ← Capisco: protegge motore dai sassi
+• "MAI PIÙ radiatore bucato!" ← Capisco: radiatore protetto
+• "Casa calda in 5 minuti!" ← Capisco: riscalda veloce
+• "Radiatore protetto: 29€!" ← Capisco: prodotto + prezzo
+• "Risparmia 200€ l'anno!" ← Capisco: beneficio economico
+
+❌ FRASI INCOMPLETE (manca qualcosa):
+• "ADDIO sassi!" ← Sassi DOVE? Non si capisce!
+• "MAI PIÙ danni!" ← Danni A COSA? Vago!
+• "Protezione top!" ← Protezione DI COSA?
+• "Sconto 50%!" ← Sconto SU COSA?
+• "Radiatore ok!" ← Cosa significa??
+• "Griglia Suzuki!" ← E quindi?
+
+🔑 TEST: La frase risponde a "COSA FA il prodotto?"
+• "ADDIO freddo in casa!" → SÌ, elimina il freddo ✅
+• "ADDIO sassi!" → NO, sassi cosa? Dove? ❌
+• "MAI PIÙ bollette salate!" → SÌ, fa risparmiare ✅
+• "MAI PIÙ danni!" → NO, danni a cosa? ❌
+
+SCRIVI 15 FRASI COMPLETE sotto 30 caratteri!
+SCRIVI IN ${languageName.toUpperCase()}!
+
+SEARCH TERMS (50 search terms) - IN ${languageName.toUpperCase()}:
+- Keywords people would search for this product
+- Mix of: product names, problems solved, benefits, related terms
+- Include variations: singular/plural, with/without adjectives
+- Examples: "energy saver", "reduce electricity bill", "power stabilizer"
+- ALL 50 MUST BE RELEVANT AND DIFFERENT!
+
 🚫 FORBIDDEN: site name, brand, shipping, warranty, generic phrases, ITALIAN WORDS (if not Italian market)
 
 === OUTPUT JSON ===
 
 {
-  "landingTakeaways": "[Product summary in ${languageName.toUpperCase()}]",
-  "competitorSnapshot": "[Competitor analysis or null]",
+  "landingTakeaways": "[Product summary]",
+  "competitorSnapshot": "[or null]",
   "facebookAngles": [
     {
-      "angleName": "[Angle name in ${languageName.toUpperCase()}]",
-      "angleDescription": "[Angle description in ${languageName.toUpperCase()}]",
-      "primaryText1": "🔥 [Hook A in ${languageName.toUpperCase()}]\\n[Support A]\\n\\n✅ [Bullet 1]\\n✅ [Bullet 2]\\n✅ [Bullet 3]\\n✅ [Bullet 4]\\n\\n❌ 99€ → ✅ 49€\\n\\n📦 [COD in ${languageName.toUpperCase()}]\\n🚚 [Shipping in ${languageName.toUpperCase()}]\\n⚡ [Urgency in ${languageName.toUpperCase()}]\\n\\n👉 [CTA in ${languageName.toUpperCase()}]",
-      "primaryText2": "🔥 [Hook B in ${languageName.toUpperCase()}]\\n[Support B]\\n\\n✅ [Different bullet 1]\\n✅ [Different bullet 2]\\n✅ [Different bullet 3]\\n✅ [Different bullet 4]\\n\\n❌ 99€ → ✅ 49€\\n\\n📦 [COD]\\n🚚 [Shipping]\\n⚡ [Urgency]\\n\\n👉 [Different CTA]",
-      "headline": "[CTA headline - action verb - push to click! in ${languageName.toUpperCase()}]",
-      "description": "[Product benefit in ${languageName.toUpperCase()}]"
+      "angleName": "[name]",
+      "angleDescription": "[desc]",
+      "primaryText": "🔥 [Hook]\\n\\n✅ [Bullet 1]\\n✅ [Bullet 2]\\n✅ [Bullet 3]\\n\\n❌ 99€ → ✅ 49€\\n\\n👉 [CTA]",
+      "headline": "[CTA - action verb]",
+      "description": "[benefit]"
     }
   ],
   "googleDemandGen": {
-    "titles": ["[Title 1 in ${languageName.toUpperCase()}]", "[Title 2]", "[Title 3]", "[Title 4]", "[Title 5]"],
-    "descriptions": ["[Desc 1 in ${languageName.toUpperCase()}]", "[Desc 2]", "[Desc 3]", "[Desc 4]", "[Desc 5]"],
-    "longTitles": ["[Long title 1 in ${languageName.toUpperCase()}]", "[Long 2]", "[Long 3]", "[Long 4]", "[Long 5]"]
+    "titles": ["ADDIO [problema]!", "MAI PIÙ [problema]!", "BASTA [problema]!", "[Prodotto]: [beneficio]", "-50%: [beneficio]!"],
+    "descriptions": ["[90 char - beneficio emotivo]", "..."],
+    "longTitles": ["[90 char - hook + prodotto + beneficio]", "..."],
+    "shortTitles": [
+      "ADDIO [problema] [dove/cosa]!",
+      "MAI PIÙ [problema specifico]!",
+      "BASTA [problema specifico]!",
+      "[Cosa] in [tempo]!",
+      "[Beneficio completo]!",
+      "[Prodotto] protetto: [prezzo]!",
+      "Risparmia [quanto] [su cosa]!",
+      "ADDIO [problema] [dove]!",
+      "MAI PIÙ [spesa specifica]!",
+      "[Risultato] garantito!",
+      "[Beneficio]: -50%!",
+      "[Cosa] sempre [come]!",
+      "Niente più [problema]!",
+      "[Soluzione] in [tempo]!",
+      "ADDIO [problema] per sempre!"
+    ],
+    "searchTerms": ["keyword1", "keyword2", ... x 50]
   }
 }
 
-4 ANGLES (all about PRODUCT):
-1. Product VERSATILITY
-2. SAVINGS with product
-3. PROBLEM the product solves
-4. EASE OF USE
+5 ANGLES (all about PRODUCT):
+1. SAVINGS/value
+2. PROBLEM solved
+3. EASE OF USE
+4. PROTECTION/safety
+5. URGENCY/scarcity
 
 === FACEBOOK HEADLINES (CRITICAL!) ===
 Headlines appear NEXT TO THE BUTTON in ads!
@@ -327,7 +411,7 @@ Valid JSON only.`;
     const jsonMatch = response.match(/\{[\s\S]*\}/);
     if (jsonMatch) {
       const parsed = JSON.parse(jsonMatch[0]);
-      const googleDemandGen = parsed.googleDemandGen || { titles: [], descriptions: [], longTitles: [] };
+      const googleDemandGen = parsed.googleDemandGen || { titles: [], descriptions: [], longTitles: [], shortTitles: [], searchTerms: [] };
 
       // Parole italiane comuni per rilevare output sbagliato (definito prima per uso in regenerate)
       const italianWords = [
@@ -348,20 +432,30 @@ Valid JSON only.`;
         return italianWords.some(word => lowerText.includes(word));
       };
 
+      // Contatore globale rigenerazioni per questo paese (max 3)
+      let regenerationCount = 0;
+      const MAX_REGENERATIONS = 3;
+
       // Funzione per rigenerare UN SINGOLO elemento che supera il limite
       const regenerateSingleItem = async (
         type: 'title' | 'description' | 'longTitle',
         currentText: string,
         limit: number
       ): Promise<string> => {
+        // Se abbiamo già raggiunto il limite, tronca direttamente
+        if (regenerationCount >= MAX_REGENERATIONS) {
+          console.log(`⚠️ Limite rigenerazioni raggiunto (${MAX_REGENERATIONS}), troncamento diretto`);
+          return currentText.slice(0, limit - 3) + '...';
+        }
         const typeNames = {
           title: 'short title',
           description: 'description',
           longTitle: 'long video title'
         };
 
-        for (let attempt = 1; attempt <= 3; attempt++) {
-          console.log(`Regenerating ${typeNames[type]} (attempt ${attempt}/3): "${currentText.slice(0, 30)}..." (${currentText.length} char, max ${limit})`);
+        // Solo 1 tentativo per elemento (il limite globale controlla il totale)
+        regenerationCount++;
+        console.log(`Regenerating ${typeNames[type]} (${regenerationCount}/${MAX_REGENERATIONS} totali): "${currentText.slice(0, 30)}..." (${currentText.length} char, max ${limit})`);
 
           const regenPrompt = `🚨 LANGUAGE: ${languageName.toUpperCase()} ONLY! 🚨
 ${languageName !== 'italiano' ? '⛔ DO NOT write in Italian! Write in ' + languageName.toUpperCase() + '!' : ''}
@@ -397,24 +491,22 @@ Reply ONLY with the new text, nothing else.`;
               console.log(`❌ Ancora troppo lungo: ${newText.length} char`);
             }
             if (textContainsItalian(newText)) {
-              console.log(`❌ Contiene italiano! Rigenerando...`);
+              console.log(`❌ Contiene italiano, troncamento`);
             }
+            // Se non valido, tronca
+            return currentText.slice(0, limit - 3) + '...';
           } catch (e) {
             console.error('Errore rigenerazione singola:', e);
+            return currentText.slice(0, limit - 3) + '...';
           }
-        }
-
-        // Dopo 3 tentativi falliti, tronca
-        console.log(`⚠️ Troncamento forzato dopo 3 tentativi`);
-        return currentText.slice(0, limit - 3) + '...';
       };
 
       // Processa ogni array e rigenera singoli elementi se necessario
-      const processArray = async (arr: any[], limit: number, type: 'title' | 'description' | 'longTitle'): Promise<string[]> => {
+      const processArray = async (arr: any[], limit: number, type: 'title' | 'description' | 'longTitle' | 'shortTitle' | 'searchTerm', maxItems: number = 5): Promise<string[]> => {
         if (!Array.isArray(arr)) return [];
 
         const result: string[] = [];
-        for (const item of arr.slice(0, 5)) {
+        for (const item of arr.slice(0, maxItems)) {
           if (!item || typeof item !== 'string') continue;
 
           const text = item.trim();
@@ -438,24 +530,37 @@ Reply ONLY with the new text, nothing else.`;
       googleDemandGen.titles = await processArray(googleDemandGen.titles, 40, 'title');
       googleDemandGen.descriptions = await processArray(googleDemandGen.descriptions, 90, 'description');
       googleDemandGen.longTitles = await processArray(googleDemandGen.longTitles, 90, 'longTitle');
+      googleDemandGen.shortTitles = await processArray(googleDemandGen.shortTitles || [], 30, 'shortTitle', 15);
+      googleDemandGen.searchTerms = await processArray(googleDemandGen.searchTerms || [], 100, 'searchTerm', 50);
 
       console.log('Demand Gen dopo processamento:', {
         titles: googleDemandGen.titles.length,
         descriptions: googleDemandGen.descriptions.length,
-        longTitles: googleDemandGen.longTitles.length
+        longTitles: googleDemandGen.longTitles.length,
+        shortTitles: (googleDemandGen.shortTitles || []).length,
+        searchTerms: (googleDemandGen.searchTerms || []).length
       });
 
-      // Se mancano elementi, genera quelli mancanti
-      const generateMissing = async (current: string[], needed: number, type: 'title' | 'description' | 'longTitle', limit: number): Promise<string[]> => {
+      // Se mancano elementi, genera quelli mancanti (solo se abbiamo budget)
+      const generateMissing = async (current: string[], needed: number, type: 'title' | 'description' | 'longTitle' | 'shortTitle' | 'searchTerm', limit: number): Promise<string[]> => {
         if (current.length >= needed) return current;
+
+        // Skip se abbiamo già usato tutte le rigenerazioni
+        if (regenerationCount >= MAX_REGENERATIONS) {
+          console.log(`⚠️ Skip generateMissing: limite rigenerazioni raggiunto`);
+          return current;
+        }
 
         const missing = needed - current.length;
         console.log(`Generando ${missing} ${type} mancanti...`);
+        regenerationCount++;
 
         const typePrompts = {
           title: `${missing} short aggressive titles (max 40 chars) about the PRODUCT`,
           description: `${missing} emotional descriptions (max 90 chars) about PRODUCT BENEFITS`,
-          longTitle: `${missing} long video titles (max 90 chars) about the PRODUCT`
+          longTitle: `${missing} long video titles (max 90 chars) about the PRODUCT`,
+          shortTitle: `${missing} ultra-short punchy titles (max 30 chars) about the PRODUCT`,
+          searchTerm: `${missing} search keywords people would use to find this PRODUCT`
         };
 
         const prompt = `🚨 LANGUAGE: ${languageName.toUpperCase()} ONLY! 🚨
@@ -493,11 +598,15 @@ Reply ONLY with a JSON array: ["item1", "item2", ...]`;
       googleDemandGen.titles = await generateMissing(googleDemandGen.titles, 5, 'title', 40);
       googleDemandGen.descriptions = await generateMissing(googleDemandGen.descriptions, 5, 'description', 90);
       googleDemandGen.longTitles = await generateMissing(googleDemandGen.longTitles, 5, 'longTitle', 90);
+      googleDemandGen.shortTitles = await generateMissing(googleDemandGen.shortTitles || [], 15, 'shortTitle', 30);
+      googleDemandGen.searchTerms = await generateMissing(googleDemandGen.searchTerms || [], 50, 'searchTerm', 100);
 
       console.log('Demand Gen finale:', {
         titles: googleDemandGen.titles,
         descriptions: googleDemandGen.descriptions,
-        longTitles: googleDemandGen.longTitles
+        longTitles: googleDemandGen.longTitles,
+        shortTitles: googleDemandGen.shortTitles,
+        searchTerms: (googleDemandGen.searchTerms || []).length + " terms"
       });
 
       return {
@@ -558,7 +667,7 @@ export async function generateAdCopyForAllCountries(
         originalPrice: countryPricing.originalPrice,
         landingTakeaways: 'Errore nella generazione',
         facebookAngles: [],
-        googleDemandGen: { titles: [], descriptions: [], longTitles: [] }
+        googleDemandGen: { titles: [], descriptions: [], longTitles: [], shortTitles: [], searchTerms: [] }
       });
     }
   }

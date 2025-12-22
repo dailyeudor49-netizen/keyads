@@ -13,7 +13,9 @@ import {
   FileText,
   Tag,
   RefreshCw,
-  Loader2
+  Loader2,
+  Search,
+  Zap
 } from 'lucide-react';
 import { CountryCopyResult, CURRENCIES } from '@/lib/types';
 
@@ -37,7 +39,7 @@ export default function CopyResults({ results, onUpdateResults, productName, lan
 
   // Rigenera un singolo elemento
   const regenerateItem = async (
-    type: 'title' | 'description' | 'longTitle' | 'headline' | 'metaDescription' | 'primaryText',
+    type: 'title' | 'description' | 'longTitle' | 'headline' | 'metaDescription' | 'primaryText' | 'shortTitle' | 'searchTerm',
     index: number,
     currentText: string,
     angleIndex?: number
@@ -61,7 +63,7 @@ export default function CopyResults({ results, onUpdateResults, productName, lan
           currentText,
           productName: productName || 'Prodotto',
           language: activeResult.language,
-          limit: type === 'title' || type === 'headline' ? 40 : 90,
+          limit: type === 'title' || type === 'headline' ? 40 : type === 'shortTitle' ? 30 : 90,
           landingContent: landingContent || '',
           previousTexts: [currentText, ...prevTexts].slice(0, 5) // Max 5 testi precedenti
         })
@@ -98,13 +100,22 @@ export default function CopyResults({ results, onUpdateResults, productName, lan
               ...updated.googleDemandGen,
               longTitles: updated.googleDemandGen.longTitles.map((t, i) => i === index ? data.text : t)
             };
+          } else if (type === 'shortTitle') {
+            updated.googleDemandGen = {
+              ...updated.googleDemandGen,
+              shortTitles: (updated.googleDemandGen.shortTitles || []).map((t, i) => i === index ? data.text : t)
+            };
+          } else if (type === 'searchTerm') {
+            updated.googleDemandGen = {
+              ...updated.googleDemandGen,
+              searchTerms: (updated.googleDemandGen.searchTerms || []).map((t, i) => i === index ? data.text : t)
+            };
           } else if (angleIndex !== undefined) {
             updated.facebookAngles = updated.facebookAngles.map((angle, ai) => {
               if (ai !== angleIndex) return angle;
               if (type === 'headline') return { ...angle, headline: data.text };
               if (type === 'metaDescription') return { ...angle, description: data.text };
-              if (type === 'primaryText' && index === 0) return { ...angle, primaryText1: data.text };
-              if (type === 'primaryText' && index === 1) return { ...angle, primaryText2: data.text };
+              if (type === 'primaryText') return { ...angle, primaryText: data.text };
               return angle;
             });
           }
@@ -264,15 +275,15 @@ export default function CopyResults({ results, onUpdateResults, productName, lan
 
                     {isExpanded && (
                       <div className="space-y-4">
-                        {/* Primary Text 1 */}
+                        {/* Primary Text */}
                         <div className="p-4 bg-zinc-50 dark:bg-zinc-800 rounded-xl">
                           <div className="flex items-center justify-between mb-2">
                             <span className="text-sm font-bold text-zinc-700 dark:text-zinc-300">
-                              Primary Text - Variante A
+                              Primary Text
                             </span>
                             <div className="flex items-center gap-1">
                               <button
-                                onClick={() => regenerateItem('primaryText', 0, angle.primaryText1, index)}
+                                onClick={() => regenerateItem('primaryText', 0, angle.primaryText || angle.primaryText1 || '', index)}
                                 disabled={regeneratingId !== null}
                                 className="p-1.5 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-lg transition-colors disabled:opacity-50"
                                 title="Rigenera"
@@ -284,10 +295,10 @@ export default function CopyResults({ results, onUpdateResults, productName, lan
                                 )}
                               </button>
                               <button
-                                onClick={() => copyToClipboard(angle.primaryText1, `${angleId}-pt1`)}
+                                onClick={() => copyToClipboard(angle.primaryText || angle.primaryText1 || '', `${angleId}-pt`)}
                                 className="p-1.5 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-lg transition-colors"
                               >
-                                {copiedId === `${angleId}-pt1` ? (
+                                {copiedId === `${angleId}-pt` ? (
                                   <Check className="w-4 h-4 text-green-500" />
                                 ) : (
                                   <Copy className="w-4 h-4 text-zinc-400" />
@@ -296,43 +307,7 @@ export default function CopyResults({ results, onUpdateResults, productName, lan
                             </div>
                           </div>
                           <p className="text-zinc-800 dark:text-zinc-200 whitespace-pre-wrap text-sm">
-                            {angle.primaryText1}
-                          </p>
-                        </div>
-
-                        {/* Primary Text 2 */}
-                        <div className="p-4 bg-zinc-50 dark:bg-zinc-800 rounded-xl">
-                          <div className="flex items-center justify-between mb-2">
-                            <span className="text-sm font-bold text-zinc-700 dark:text-zinc-300">
-                              Primary Text - Variante B
-                            </span>
-                            <div className="flex items-center gap-1">
-                              <button
-                                onClick={() => regenerateItem('primaryText', 1, angle.primaryText2, index)}
-                                disabled={regeneratingId !== null}
-                                className="p-1.5 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-lg transition-colors disabled:opacity-50"
-                                title="Rigenera"
-                              >
-                                {regeneratingId === `primaryText-${index}-1` ? (
-                                  <Loader2 className="w-4 h-4 text-purple-500 animate-spin" />
-                                ) : (
-                                  <RefreshCw className="w-4 h-4 text-purple-400 hover:text-purple-600" />
-                                )}
-                              </button>
-                              <button
-                                onClick={() => copyToClipboard(angle.primaryText2, `${angleId}-pt2`)}
-                                className="p-1.5 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-lg transition-colors"
-                              >
-                                {copiedId === `${angleId}-pt2` ? (
-                                  <Check className="w-4 h-4 text-green-500" />
-                                ) : (
-                                  <Copy className="w-4 h-4 text-zinc-400" />
-                                )}
-                              </button>
-                            </div>
-                          </div>
-                          <p className="text-zinc-800 dark:text-zinc-200 whitespace-pre-wrap text-sm">
-                            {angle.primaryText2}
+                            {angle.primaryText || angle.primaryText1}
                           </p>
                         </div>
 
@@ -576,6 +551,118 @@ export default function CopyResults({ results, onUpdateResults, productName, lan
               </div>
             </div>
           </div>
+
+          {/* Performance Max Section */}
+          {(activeResult.googleDemandGen.shortTitles?.length > 0 || activeResult.googleDemandGen.searchTerms?.length > 0) && (
+            <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-700 overflow-hidden">
+              <div className="p-6 border-b border-zinc-200 dark:border-zinc-700 bg-orange-50 dark:bg-orange-900/20">
+                <h3 className="flex items-center gap-2 text-lg font-semibold text-zinc-900 dark:text-white">
+                  <Zap className="w-5 h-5 text-orange-500" />
+                  Performance Max
+                </h3>
+                <p className="text-sm text-zinc-500 mt-1">
+                  Titoli corti e termini di ricerca per campagne Performance Max
+                </p>
+              </div>
+
+              <div className="p-6 space-y-6">
+                {/* Short Titles */}
+                {activeResult.googleDemandGen.shortTitles?.length > 0 && (
+                  <div>
+                    <h4 className="flex items-center gap-2 text-sm font-bold text-zinc-700 dark:text-zinc-300 mb-3">
+                      <FileText className="w-4 h-4" />
+                      Titoli Corti (max 30 caratteri) - {activeResult.googleDemandGen.shortTitles.length} titoli
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+                      {activeResult.googleDemandGen.shortTitles.map((title, index) => (
+                        <div
+                          key={index}
+                          className="flex items-center justify-between p-3 bg-zinc-50 dark:bg-zinc-800 rounded-lg"
+                        >
+                          <span className="text-zinc-800 dark:text-zinc-200 text-sm flex-1 mr-2 truncate">
+                            {title}
+                          </span>
+                          <div className="flex items-center gap-1 shrink-0">
+                            <span className={`text-xs ${title.length > 30 ? 'text-red-500' : 'text-zinc-400'}`}>
+                              {title.length}/30
+                            </span>
+                            <button
+                              onClick={() => regenerateItem('shortTitle', index, title)}
+                              disabled={regeneratingId !== null}
+                              className="p-1.5 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-lg transition-colors disabled:opacity-50"
+                              title="Rigenera"
+                            >
+                              {regeneratingId === `shortTitle-${index}` ? (
+                                <Loader2 className="w-4 h-4 text-orange-500 animate-spin" />
+                              ) : (
+                                <RefreshCw className="w-4 h-4 text-orange-400 hover:text-orange-600" />
+                              )}
+                            </button>
+                            <button
+                              onClick={() => copyToClipboard(title, `${activeResult.countryCode}-short-${index}`)}
+                              className="p-1.5 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-lg transition-colors"
+                            >
+                              {copiedId === `${activeResult.countryCode}-short-${index}` ? (
+                                <Check className="w-4 h-4 text-green-500" />
+                              ) : (
+                                <Copy className="w-4 h-4 text-zinc-400" />
+                              )}
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Search Terms */}
+                {activeResult.googleDemandGen.searchTerms?.length > 0 && (
+                  <div>
+                    <h4 className="flex items-center gap-2 text-sm font-bold text-zinc-700 dark:text-zinc-300 mb-3">
+                      <Search className="w-4 h-4" />
+                      Termini di Ricerca - {activeResult.googleDemandGen.searchTerms.length} termini
+                    </h4>
+                    <div className="flex flex-wrap gap-2">
+                      {activeResult.googleDemandGen.searchTerms.map((term, index) => (
+                        <div
+                          key={index}
+                          className="group flex items-center gap-1 px-3 py-1.5 bg-zinc-100 dark:bg-zinc-800 rounded-full text-sm text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
+                        >
+                          <span>{term}</span>
+                          <button
+                            onClick={() => copyToClipboard(term, `${activeResult.countryCode}-term-${index}`)}
+                            className="opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            {copiedId === `${activeResult.countryCode}-term-${index}` ? (
+                              <Check className="w-3 h-3 text-green-500" />
+                            ) : (
+                              <Copy className="w-3 h-3 text-zinc-400" />
+                            )}
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                    <button
+                      onClick={() => copyToClipboard(activeResult.googleDemandGen.searchTerms.join(', '), `${activeResult.countryCode}-all-terms`)}
+                      className="mt-3 flex items-center gap-2 px-4 py-2 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 rounded-lg hover:bg-orange-200 dark:hover:bg-orange-900/50 transition-colors text-sm font-medium"
+                    >
+                      {copiedId === `${activeResult.countryCode}-all-terms` ? (
+                        <>
+                          <Check className="w-4 h-4" />
+                          Copiati tutti!
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-4 h-4" />
+                          Copia tutti i termini
+                        </>
+                      )}
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>

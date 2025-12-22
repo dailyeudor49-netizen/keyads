@@ -4,7 +4,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_COPY_API_KEY || '');
 
 interface RegenerateRequest {
-  type: 'title' | 'description' | 'longTitle' | 'headline' | 'metaDescription' | 'primaryText';
+  type: 'title' | 'description' | 'longTitle' | 'headline' | 'metaDescription' | 'primaryText' | 'shortTitle' | 'searchTerm';
   currentText: string;
   productName: string;
   language: string;
@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemma-3-27b-it' });
 
     // Usa landingContent se disponibile, altrimenti fallback su productName
     const productContext = landingContent
@@ -80,13 +80,23 @@ Rispondi SOLO con il nuovo primary text, nient'altro.`;
         title: {
           name: 'titolo breve Google Ads',
           maxChars: limit || 40,
-          instruction: `Scrivi un titolo AGGRESSIVO e URGENTE per Google Ads!
-⚡ DEVE essere: emotivo, urgente, con un verbo d'azione
-⚡ DEVE spiegare una FUNZIONE o BENEFICIO chiave del prodotto
-⚡ Crea URGENZA: "Ultima chance", "Offerta limitata", "Solo oggi"
-⚡ Parole d'AZIONE: "Scopri", "Risparmia", "Trasforma", "Ottieni"
-❌ MAI solo il nome del prodotto!
-✅ ES: "Taglia la Bolletta 50% - Ora!" invece di "Energy Saver Pro"`
+          instruction: `Scrivi un titolo che parla del PRODOTTO SPECIFICO!
+
+=== REGOLA FONDAMENTALE ===
+Le parole emotive DEVONO essere COLLEGATE a un beneficio CONCRETO del prodotto.
+
+✅ FORMULA: [parola emotiva] + [beneficio specifico]
+• "ADDIO mal di schiena" ← collegato al prodotto
+• "MAI PIÙ bollette alte" ← collegato al prodotto
+• "BASTA TV che lagga" ← collegato al prodotto
+• "Stop al rumore: silenzio totale" ← collegato al prodotto
+
+❌ VIETATO (generico, fine a sé stesso):
+• "WOW!" "INCREDIBILE!" "PAZZESCO!" "FANTASTICO!"
+• "Offerta speciale" "Sconto imperdibile"
+• "Cuffie ufficio" (etichetta)
+
+Il titolo deve rispondere a: "Cosa FA questo prodotto per me?"`
         },
         description: {
           name: 'descrizione Google Ads',
@@ -100,10 +110,18 @@ Rispondi SOLO con il nuovo primary text, nient'altro.`;
         longTitle: {
           name: 'titolo lungo per video',
           maxChars: limit || 90,
-          instruction: `Scrivi un titolo video ACCATTIVANTE!
-⚡ Hook iniziale + funzione prodotto + beneficio + urgenza
-⚡ Deve far venire voglia di guardare il video
-⚡ Linguaggio emotivo e persuasivo`
+          instruction: `Scrivi un titolo video che spiega COSA FA il prodotto!
+
+✅ STRUTTURA: [Hook emotivo] + [cosa fa il prodotto] + [beneficio concreto]
+• "ADDIO mal di schiena: questo cuscino mi ha cambiato la vita"
+• "MAI PIÙ bollette alte: ecco come risparmiare 200€ l'anno sulla luce"
+• "Come ho trasformato la mia vecchia TV in Smart TV 4K con 49€"
+
+❌ VIETATO:
+• Parole generiche sole: "INCREDIBILE!" "WOW!" "PAZZESCO!"
+• Titoli vaghi: "Il prodotto che tutti vogliono"
+
+Il titolo deve far capire ESATTAMENTE cosa fa il prodotto!`
         },
         headline: {
           name: 'headline Meta Ads',
@@ -119,6 +137,29 @@ Rispondi SOLO con il nuovo primary text, nient'altro.`;
           name: 'descrizione Meta Ads',
           maxChars: limit || 90,
           instruction: 'Scrivi una descrizione emotiva dei benefici del PRODOTTO FISICO venduto'
+        },
+        shortTitle: {
+          name: 'titolo ultra-corto Performance Max',
+          maxChars: limit || 30,
+          instruction: `Titolo AGGRESSIVO in max 30 caratteri!
+
+✅ FORMULA: [parola emotiva] + [beneficio SPECIFICO]
+• "ADDIO sassi nel radiatore!"
+• "MAI PIÙ radiatore bucato!"
+• "Stop detriti: motore salvo!"
+• "BASTA danni da ghiaia!"
+
+❌ VIETATO (etichette generiche):
+• "Griglia radiatore" ← solo nome prodotto
+• "Protezione motore" ← troppo generico
+• "Facile installazione" ← vale per qualsiasi cosa
+
+Il titolo deve contenere un BENEFICIO SPECIFICO!`
+        },
+        searchTerm: {
+          name: 'termine di ricerca',
+          maxChars: limit || 100,
+          instruction: 'Scrivi una keyword che gli utenti userebbero per cercare questo prodotto. Es: risparmio energia, protezione casa'
         }
       };
 
@@ -174,7 +215,7 @@ Rispondi SOLO con il nuovo testo (max ${config.maxChars} char), senza virgolette
 
     // Per tipi non-primaryText, verifica lunghezza
     if (type !== 'primaryText') {
-      const maxChars = limit || (type === 'title' || type === 'headline' ? 40 : 90);
+      const maxChars = limit || (type === 'title' || type === 'headline' ? 40 : type === 'shortTitle' ? 30 : 90);
 
       if (newText.length > maxChars) {
         // Riprova una volta

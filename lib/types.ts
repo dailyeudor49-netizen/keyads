@@ -196,17 +196,20 @@ export interface CopyGenerationRequest {
 export interface FacebookAngle {
   angleName: string;
   angleDescription: string;
-  primaryText1: string;
-  primaryText2: string; // Variante A/B
+  primaryText: string;  // Testo principale (semplificato da primaryText1/2)
+  primaryText1?: string; // DEPRECATO - per retrocompatibilità
+  primaryText2?: string; // DEPRECATO - per retrocompatibilità
   headline: string;
   description: string;
 }
 
-// Struttura per Google Demand Gen
+// Struttura per Google Demand Gen + Performance Max
 export interface GoogleDemandGen {
   titles: string[];        // 5 titoli (≤40 caratteri)
   descriptions: string[];  // 5 descrizioni (≤90 caratteri)
   longTitles: string[];    // 5 titoli lunghi video (≤90 caratteri)
+  shortTitles: string[];   // 15 titoli corti Performance Max (≤30 caratteri)
+  searchTerms: string[];   // 50 termini di ricerca Performance Max
 }
 
 // Risultati per singola nazione
