@@ -438,7 +438,7 @@ Valid JSON only.`;
 
       // Funzione per rigenerare UN SINGOLO elemento che supera il limite
       const regenerateSingleItem = async (
-        type: 'title' | 'description' | 'longTitle',
+        type: 'title' | 'description' | 'longTitle' | 'shortTitle' | 'searchTerm',
         currentText: string,
         limit: number
       ): Promise<string> => {
@@ -450,7 +450,9 @@ Valid JSON only.`;
         const typeNames = {
           title: 'short title',
           description: 'description',
-          longTitle: 'long video title'
+          longTitle: 'long video title',
+          shortTitle: 'short title',
+          searchTerm: 'search term'
         };
 
         // Solo 1 tentativo per elemento (il limite globale controlla il totale)
